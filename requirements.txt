@@ -1,0 +1,14 @@
+requests
+fastapi
+fastapi-login
+uvicorn
+pymysql
+sqlalchemy
+aiofiles
+python-multipart
+wechatarticles
+pydash
+numpy
+termcolor
+lxml
+scrapy

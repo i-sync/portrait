@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ data.meta.site_name }}{% if "category" in data and data.category is not none %} - {{data.category.title}} {% endif %}{% endblock %}
+
+{% block metadata %}
+<meta name="keywords" content="{{ data.keywords }}">
+<meta name="description" content="{{ data.description }}">
+<meta name="og:url" content="{{data.url}}" />
+<meta name="og:title" content="{{ data.meta.site_name }}" />
+<meta name="og:description" content="{{ data.description  }}" />
+<meta name="og:image" content="{{data.cover}}" />
+<meta name="twitter:url" content="{{data.url}}" />
+<meta name="twitter:title" content="{{ data.meta.site_name }}" />
+<meta name="twitter:description" content="{{ data.description  }}" />
+<meta name="twitter:image" content="{{data.cover}}" />
+<meta name="twitter:card" content="summary_large_image" />
+{% endblock %}
+
+{% block head %}
+<!-- 
+<script>
+    $(function(){
+        var app = Vue.createApp({
+            compilerOptions: {
+                    delimiters: ["${", "}"]
+            },
+            data : function() {
+                return {
+                    orderby: getQueryString('order') || "new"
+                }
+            },
+            methods:{
+                change_order: function(order){
+                    refresh_param({order: order})
+                }
+            }
+        });
+        app.mount("#orderby");
+    })
+</script> -->
+
+{% endblock %}
+
+{% block content %}
+
+<div id="main-carousel" class="carousel slide mb-3" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        {% for album in data.tops %}
+        <button type="button" data-bs-target="#main-carousel" data-bs-slide-to="{{loop.index0}}" class="{% if loop.index0 == 0 %} active {% endif %} " aria-current="true" aria-label="{{album.digest}}"></button>
+        {% endfor %}
+    </div>
+    <div class="carousel-inner">
+        {% for album in data.tops %}
+        <div class="carousel-item {% if loop.index0 == 0 %} active {% endif %} ">
+            <a href="/{{album.category.name}}/{{album.id}}" target="_blank" alt="{{album.title}}" title="{{album.title}}">
+                <img src="/static/images/loader.gif" data-src="{{album.cover}}" class="d-block lazy" alt="{{album.title}}" referrerpolicy="no-referrer" />
+            </a>
+            <div class="carousel-caption d-block d-md-block">
+                <h5>{{album.author}}</h5>
+                <p>{{album.digest}}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#main-carousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#main-carousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        {% if data.category %}
+        <li class="breadcrumb-item"><a href="/">首页</a></li>
+        <li class="breadcrumb-item active" aria-current="{{data.category.title}}">{{data.category.title}}</li>
+        {% else %}
+        <li class="breadcrumb-item active"><a href="/">首页</a></li>
+        {% endif %}
+    </ol>
+</nav>
+
+<div class="row row-cols-2 row-cols-md-5 g-4 my-3">
+
+    {% for album in data.albums %}
+    <div class="col">
+        <a class="card-link" href="/{{album.category.name}}/{{album.id}}" alt="{{album.title}}" title="{{album.title}}">
+            <div class="card h-100">
+                <img class="card-img-top lazy" src="/static/images/loader.gif" data-src="{{album.cover}}" alt="{{album.title}}" referrerpolicy="no-referrer" />
+                <span class=" author position-absolute badge rounded-pill bg-secondary">
+                    <object>
+                        <a class="card-link" href="/search/?s={{album.author}}" alt="{{album.author}}" title="{{album.author}}">
+                            {{album.author}}
+                        </a>
+                    </object>
+                </span>
+                <div class="card-title mx-1 my-1">
+                    {{album.digest}}
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted"><i class="bi bi-calendar-date"></i> {{album.origin_created_at|date}}</small>
+                    <small class="text-muted float-right"><i class="bi bi-eye"></i> {{album.view_count}}</small>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+
+</div>
+
+{{ pagination('?page=', data.page) }}
+
+{% endblock %}
+
+
+{% block bodyscript %}
+<script>
+    window.lazyLoadOptions = {
+        threshold: 0
+    };
+    window.addEventListener(
+        "LazyLoad::Initialized",
+        function(e) {
+            //console.log(e.detail.instance);
+        },
+        false
+    );
+</script>
+{% endblock %}

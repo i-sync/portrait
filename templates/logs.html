@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}日志{% endblock %}
+
+{% block head %}
+
+<script>
+    //Vue.use(VueFullscreen.default);
+    function initVM(data) {
+        var app = Vue.createApp({
+            compilerOptions: {
+                delimiters: ["${", "}"]
+            },
+            data() {
+                return {
+                    update_at: data.update_at,
+                    result: data.logs
+                    //fullscreen: false
+                }
+            },
+            methods:{
+                read_logs :function(){
+                    this_ = this;
+                    getJSON('/api/logs', function(err,r ){
+                        if(err){
+                            return alert(err.message || err.error || err);
+                        }
+                        else{
+                            this_.$data.result = r.logs
+                        }
+                    });
+                },
+                toggle() {
+                  this.$refs['fullscreen'].toggle()
+                }
+            },
+            mounted() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const refresh = urlParams.get('refresh');
+                if (refresh)
+                {
+                    this.timer = setInterval(this.read_logs, refresh * 1000);
+                }
+            },
+            beforeDestroy() {
+                clearInterval(this.timer);
+            }
+        }).mount("#app");
+    }
+
+    $(function(){
+        getJSON('/api/logs', function(err, results){
+            $("#vm").removeClass('loading');
+            if(err){
+                return error(err);
+            }
+            //$('#loading').hide();
+            initVM(results);
+        });
+    });
+</script>
+<style>
+    div#app{
+        
+        height:650px;
+    }
+    div.fullscreen-wrapper {
+        position: relative;
+        height:550px;
+    }
+    div.fullscreen-wrapper a.tx-icon {
+        position: absolute;
+        right: 12px;
+        top: 5px;
+        width: 18px;
+        height: 16px;
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAQCAYAAAAbBi9cAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABV0RVh0Q3JlYXRpb24gVGltZQA4LzE2LzEzspl6ugAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNui8sowAAAB7SURBVDiN7ZOxCsAgDESvxXyhi5P/Fif/0i6NGJH2KIUufVOUJB45s6lqw0DOGQylFHfeqSqCYEGMESJCF6aUAAC1Vt9IRPolixtDG1DVxjLnhtVL8yAvlZy8Nuy/0T1L19g1cY3Mavupd9bPWL5T9ERJV2SBrcfn238A3whjoYEPESwAAAAASUVORK5CYII=');
+        cursor: pointer;
+        z-index: 3;
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+<div id="app" class="container-fluid">
+    <div id="error" class="alert alert-danger visually-hidden" role="alert"></div>
+    <div class="container">
+        Last updated: <span>${update_at.toDateTime()}</span>, 
+        Refresh each 
+        <a href="/page/logs">No Refresh</a>, 
+        <a href="/page/logs?refresh=1">1 sec</a>, 
+        <a href="/page/logs?refresh=3">3 sec</a>, 
+        <a href="/page/logs?refresh=5">5 sec</a>, 
+        <a href="/page/logs?refresh=10">10 sec</a>, 
+        <a href="/page/logs?refresh=30">30 sec</a>,
+    </div>
+    <br />
+    <!-- <fullscreen ref="fullscreen" class="fullscreen-wrapper">
+        <a @click="toggle" href="#" class="tx-icon"></a>
+    </fullscreen> -->
+    <textarea v-model="result" class="form-control" readonly="readonly" style="width:100%;height:100%;"></textarea>
+</div>
+{% endblock %}
