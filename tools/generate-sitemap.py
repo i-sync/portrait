@@ -4,7 +4,7 @@ import sys
 
 sys.path.append('../')
 from app.library.config import configs
-from app.library.models import session_scope, ArticleInfo, Tags, PublicAccount
+from app.library.models import session_scope, XiurenAlbum, XiurenCategory
 
 
 def generate_sitemap():
@@ -16,13 +16,13 @@ def generate_sitemap():
         <priority>1.0</priority>
     </url>'''
 
-    # public account
+    # category
     with session_scope() as session:
-        public_accounts = session.query(PublicAccount).all()
-        for account in public_accounts:
+        categories = session.query(XiurenCategory).filter(XiurenCategory.is_enabled == 1).all()
+        for category in categories:
             item = f'''
     <url>
-        <loc>{configs.meta.site_url}/account/{account.fakeid}/</loc>
+        <loc>{configs.meta.site_url}/{category.name}</loc>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>'''
@@ -30,11 +30,12 @@ def generate_sitemap():
 
     # article detail page
     with session_scope() as session:
-        articles = session.query(ArticleInfo).filter(ArticleInfo.is_crawled == 1, ArticleInfo.is_enabled == 1).all()
-        for article in articles:
+        albums = session.query(XiurenAlbum).filter(XiurenAlbum.is_enabled == 1).all()
+        for album in albums:
+            category = next((x for x in categories if x.id == album.category_id), None)
             item = f'''
     <url>
-        <loc>{configs.meta.site_url}/article/{article.id}/</loc>
+        <loc>{configs.meta.site_url}/{category.name}/{album.id}/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>'''
