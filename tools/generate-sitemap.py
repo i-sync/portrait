@@ -35,7 +35,7 @@ def generate_sitemap():
             category = next((x for x in categories if x.id == album.category_id), None)
             item = f'''
     <url>
-        <loc>{configs.meta.site_url}/{category.name}/{album.id}/</loc>
+        <loc>{configs.meta.site_url}/{category.name}/{album.id}</loc>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>'''
