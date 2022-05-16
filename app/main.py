@@ -216,8 +216,8 @@ async def article(category, id, request: Request, page = "1"):
         # if article_detail:
         #     session.expunge(article_detail)
 
-    r = requests.get(album.cover)
-    cover = r.history[-1].headers["Location"] if r.status_code == 200 and len(r.history) else f"{configs.meta.site_url}/static/images/cover.jpg"
+    # r = requests.get(album.cover)
+    # cover = r.history[-1].headers["Location"] if r.status_code == 200 and len(r.history) else f"{configs.meta.site_url}/static/images/cover.jpg"
     data = {
         "menu": MENU,
         "page": page,
@@ -227,7 +227,7 @@ async def article(category, id, request: Request, page = "1"):
         "images": images,
         "url": request.url,
         "meta": configs.meta,
-        "cover": cover,
+        "cover": album.cover,
         "friendly_link": configs.friendly_link,
         "keywords": ", ".join([x.title for x in tags])
     }
