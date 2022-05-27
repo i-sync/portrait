@@ -1,10 +1,12 @@
 import re, os, sys, time, random
 sys.path.append("..")
 import scrapy
+from threading import RLock
 from bs4 import BeautifulSoup
 from app.library.models import session_scope, XiurenCategory
 from xiuren.items import XiurenAlbumItem
 
+rlock = RLock()
 
 class AlbumSpider(scrapy.Spider):
     name = 'album'
@@ -44,11 +46,14 @@ class AlbumSpider(scrapy.Spider):
         for img in images:
             link = img.xpath("@src").extract_first()
             item["images"].append(f"{self.base_url}{link}")
-        
+
+        rlock.acquire()
         if len(pages):
             link = pages.pop(0)
+            rlock.release()
             yield scrapy.Request(url = f"{self.base_url}{link}", callback=self.sub_detail_parse, meta={"item": item, "pages": pages})
         else:
+            rlock.release()
             yield item
 
     def detail_parse(self, response):
