@@ -16,6 +16,8 @@ from starlette.responses import Response, RedirectResponse
 from sqlalchemy import func, desc
 from sqlalchemy.sql import text
 
+from user_agents import parse
+
 from app.library.models import session_scope, XiurenAlbum, XiurenCategory, XiurenImage, XiurenTag
 from app.routers import login, logs
 from app.routers.login import manager
@@ -72,8 +74,13 @@ def get_category():
     # print(categories)
     return categories
 
+def parse_user_agent(request: Request):
+    user_agent = parse(request.headers.get("user-agent"))
+    request.user_agent = user_agent
+
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request, page = "1", order = "new"):
+    parse_user_agent(request)
     categories = get_category()
     page_index = get_page_index(page)
     with session_scope() as session:
@@ -105,6 +112,7 @@ async def index(request: Request, page = "1", order = "new"):
 async def search(s, request: Request, page = "1", order = "new"):
     if not s:
         return RedirectResponse("/")
+    parse_user_agent(request)
     page_index = get_page_index(page)
     categories = get_category()
     with session_scope() as session:
@@ -136,6 +144,7 @@ async def search(s, request: Request, page = "1", order = "new"):
 async def sort(order, request: Request):
     if not order:
         return RedirectResponse("/")
+    parse_user_agent(request)
     categories = get_category()
     with session_scope() as session:
         if order == "new":
@@ -165,6 +174,7 @@ async def sort(order, request: Request):
 
 @app.get("/{category}", response_class=HTMLResponse)
 async def category(category, request: Request, page = "1", order = "new"):
+    parse_user_agent(request)
     categories = get_category()
     category = next((x for x in categories if x.name == category), None)
     if not category:
@@ -200,6 +210,7 @@ async def category(category, request: Request, page = "1", order = "new"):
 
 @app.get("/{category}/{id}", response_class=HTMLResponse)
 async def article(category, id, request: Request, page = "1"):
+    parse_user_agent(request)
     categories = get_category()
     page_index = get_page_index(page)
     with session_scope() as session:

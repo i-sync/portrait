@@ -12,3 +12,6 @@ numpy
 termcolor
 lxml
 scrapy
+pyyaml
+ua-parser
+user-agents
