@@ -41,9 +41,10 @@ def test_proxy(proxies):
     test proxy is available
     """
     targets = [
+        "https://www.xiurenb.com/",
         "https://www.google.com",
-        "https://www.baidu.com",
-        "https://www.viagle.cn"
+        #"https://www.baidu.com",
+        #"https://www.viagle.cn"
     ]
     for target in targets:
         try:

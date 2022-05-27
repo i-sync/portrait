@@ -18,7 +18,7 @@ class AlbumSpider(scrapy.Spider):
     custom_settings = {
         'DOWNLOADER_MIDDLEWARES': {
             'xiuren.middlewares.XiurenAlbumMiddleware': 500,
-            'xiuren.middlewares.XiurenProxyMiddleware': 543,
+            #'xiuren.middlewares.XiurenProxyMiddleware': 543,
         },
         'ITEM_PIPELINES': {
             'xiuren.pipelines.XiurenAlbumPipeline': 300,
@@ -106,7 +106,8 @@ class AlbumSpider(scrapy.Spider):
 
         page_number = response.meta["page_number"] if "page_number" in response.meta else 1
         page_number += 1
-        if page_number <= last_page:
+        #if page_number <= last_page:
+        if page_number <= 2: #daily crawl only check 2 page.
             next_url = f"{self.base_url}/{category_name}/index{page_number}.html"
             print(category_name, page_number, last_page, "next page", next_url)
             yield scrapy.Request(url = next_url, callback=self.parse, meta={"page_number": page_number})
