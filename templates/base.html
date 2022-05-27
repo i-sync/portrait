@@ -164,6 +164,10 @@
     </head>
 
     <body class="{% block bodyclass %}{% endblock %}">
+
+        <!-- exoclick ad script -->
+        <script async type="application/javascript" src="https://a.realsrv.com/ad-provider.js"></script>
+
         <!-- Bootstrap JSs -->
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
@@ -238,6 +242,17 @@
                 </nav>
             </div>
 
+            {% if request.user_agent.is_mobile %}
+                <!-- portrait mobile top banner -->
+                <div class="container">
+                    <ins class="adsbyexoclick" data-zoneid="4697156"></ins> 
+                </div>
+            {% else %}
+                <!-- portrait desktop top banner -->
+                <div class="container">
+                    <ins class="adsbyexoclick" data-zoneid="4696934"></ins> 
+                </div>
+            {% endif %}
             <div class="page-content">
                 <div class="container">{% block content %} {% endblock %}</div>
             </div>
@@ -277,6 +292,10 @@
 
         {% block bodyscript %} {% endblock %}
 
+        <!-- exoclick script -->
+        <script>(AdProvider = window.AdProvider || []).push({'serve': {}});</script>
+
+        <!-- lazyload -->
         <script async src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.7.0/dist/lazyload.min.js"></script>
     </body>
 </html>
