@@ -75,10 +75,11 @@ class AlbumSpider(scrapy.Spider):
             item["images"].append(f"{self.base_url}{link}")
 
         pages = response.xpath("(//div[@class='page'])[1]/a/@href").extract()[1:-1]
-        link = pages.pop(0)
-        yield scrapy.Request(url = f"{self.base_url}{link}", callback=self.sub_detail_parse, meta={"item": item, "pages": pages})
-            
-        # yield item
+        if pages and len(pages) > 0:
+            link = pages.pop(0)
+            yield scrapy.Request(url = f"{self.base_url}{link}", callback=self.sub_detail_parse, meta={"item": item, "pages": pages})
+        else:  
+            yield item
 
     def parse(self, response):
         # time.sleep(random.random())
