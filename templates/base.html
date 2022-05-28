@@ -123,8 +123,8 @@
         </script>
 
         <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" crossorigin="anonymous" />
+        <link href="https://fastly.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" crossorigin="anonymous" />
 
         <!-- Custom CSS -->
         <link href="/static/css/style.css" rel="stylesheet" />
@@ -169,14 +169,14 @@
         <script async type="application/javascript" src="https://a.realsrv.com/ad-provider.js"></script>
 
         <!-- Bootstrap JSs -->
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+        <script src="https://fastly.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+        <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
         <!-- https://github.com/SortableJS/vue.draggable.next -->
         <!-- CDNJS :: Sortable (https://cdnjs.com/) -->
-        <!-- <script src="//cdn.jsdelivr.net/npm/sortablejs@1.10.2/Sortable.min.js" crossorigin="anonymous"></script> -->
+        <!-- <script src="//fastly.jsdelivr.net/npm/sortablejs@1.10.2/Sortable.min.js" crossorigin="anonymous"></script> -->
         <!-- CDNJS :: Vue.Draggable (https://cdnjs.com/) -->
         <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/4.0.0/vuedraggable.umd.min.js" crossorigin="anonymous"></script> -->
-        <!-- <script src="https://cdn.jsdelivr.net/npm/vuedraggable@4.1.0/dist/vuedraggable.umd.js" crossorigin="anonymous"></script> -->
+        <!-- <script src="https://fastly.jsdelivr.net/npm/vuedraggable@4.1.0/dist/vuedraggable.umd.js" crossorigin="anonymous"></script> -->
         <script src="/static/js/index.js"></script>
 
         <div class="page">
@@ -328,17 +328,17 @@
         <footer class="footer">
             <div class="container py-5">
                 <div class="row text-center">
-                <p>&copy; <script>                        document.write(new Date().getFullYear())                    </script> <a href="/">{{ data.meta.site_name }}</a></p>
-                <h3>美图分享,每日更新.</h3>
-                <div>友情链接：
-                <ul class="list-inline list-inline-item">
-                    {% for link in data.friendly_link %}
-                    <li class="list-inline-item"><a href="{{ link.link }}">{{ link.name }}</a></li>
-                    {% endfor %}
-                </ul>
-</div>
-                <p>本站数据来自网络，如侵害您的权利请联系本站删除相关信息，邮箱：<a href="mailto:{{ data.meta.site_email }}" title="{{ data.meta.site_email }}">{{ data.meta.site_email }}</a></p>
-</div>
+                    <p>&copy; <script>                        document.write(new Date().getFullYear())                    </script> <a href="/">{{ data.meta.site_name }}</a></p>
+                    <h3>美图分享,每日更新.</h3>
+                    <div>友情链接：
+                        <ul class="list-inline list-inline-item">
+                            {% for link in data.friendly_link %}
+                            <li class="list-inline-item"><a href="{{ link.link }}">{{ link.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <p>本站数据来自网络，如侵害您的权利请联系本站删除相关信息，邮箱：<a href="mailto:{{ data.meta.site_email }}" title="{{ data.meta.site_email }}">{{ data.meta.site_email }}</a></p>
+                </div>
             </div>
         </footer>
 
@@ -348,6 +348,6 @@
         <script>(AdProvider = window.AdProvider || []).push({'serve': {}});</script>
 
         <!-- lazyload -->
-        <script async src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.7.0/dist/lazyload.min.js"></script>
+        <script async src="https://fastly.jsdelivr.net/npm/vanilla-lazyload@17.7.0/dist/lazyload.min.js"></script>
     </body>
 </html>
