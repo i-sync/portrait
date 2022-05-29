@@ -36,7 +36,7 @@ def generate_sitemap():
             item = f'''
     <url>
         <loc>{configs.meta.site_url}/{category.name}/{album.id}</loc>
-        <changefreq>monthly</changefreq>
+        <changefreq>daily</changefreq>
         <priority>0.5</priority>
     </url>'''
             sitemap += item
