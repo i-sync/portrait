@@ -7,6 +7,7 @@ uvicorn app.main:app --host 0.0.0.0 --port=8200
 
 ## Refer
 > [https://github.com/selwin/python-user-agents](https://github.com/selwin/python-user-agents)
+> [https://github.com/laurentS/slowapi](https://github.com/laurentS/slowapi)
 
 ## Scrapy
 cd root/xiuren

@@ -18,6 +18,12 @@ from sqlalchemy.sql import text
 
 from user_agents import parse
 
+
+from slowapi.errors import RateLimitExceeded
+from slowapi import Limiter
+#from slowapi import _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+
 from app.library.models import session_scope, XiurenAlbum, XiurenCategory, XiurenImage, XiurenTag
 from app.routers import login, logs
 from app.routers.login import manager
@@ -38,6 +44,22 @@ templates.env.filters["date"] = date_filter
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+
+
+def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded) -> Response:
+    """
+    Build a simple Redirect response that redirect the error details of the rate limit
+    that was hit. If no limit is hit, the countdown is added to headers.
+    """
+    response = RedirectResponse(url="/limit-error")
+    response = request.app.state.limiter._inject_headers(
+        response, request.state.view_rate_limit
+    )
+    return response
+
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 manager.useRequest(app)
 
@@ -172,6 +194,22 @@ async def sort(order, request: Request):
     return templates.TemplateResponse("other.html", {"request": request, "data": data})
 
 
+@app.get("/limit-error", response_class=HTMLResponse)
+async def limit_error(request: Request):
+    parse_user_agent(request)
+    categories = get_category()
+
+    data = {
+        "menu": MENU,
+        "message": "Rate limit exceeded",
+        "categories": categories,
+        "url": request.url,
+        "meta": configs.meta,
+        "friendly_link": configs.friendly_link,
+        "keywords": configs.meta.keywords
+    }
+    return templates.TemplateResponse("error.html", {"request": request, "data": data})
+
 @app.get("/{category}", response_class=HTMLResponse)
 async def category(category, request: Request, page = "1", order = "new"):
     parse_user_agent(request)
@@ -209,6 +247,7 @@ async def category(category, request: Request, page = "1", order = "new"):
 
 
 @app.get("/{category}/{id}", response_class=HTMLResponse)
+@limiter.limit("20000/day;2000/hour;60/minute;1/second")
 async def article(category, id, request: Request, page = "1"):
     parse_user_agent(request)
     categories = get_category()
