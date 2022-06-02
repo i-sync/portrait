@@ -283,7 +283,7 @@ async def article(category, id, request: Request, page = "1"):
         "meta": configs.meta,
         "cover": album.cover,
         "friendly_link": configs.friendly_link,
-        "keywords": ", ".join([x.title for x in tags])
+        "keywords": ", ".join([x.title for x in tags]) if tags else album.title
     }
     return templates.TemplateResponse("article.html", {"request": request, "data": data})
 
