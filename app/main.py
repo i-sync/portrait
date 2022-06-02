@@ -257,7 +257,11 @@ async def article(category, id, request: Request, page = "1"):
         album.category = next(x for x in categories if x.id == album.category_id)
         # if album:
         #     session.expunge(album)
-        tags = session.query(XiurenTag).filter(XiurenTag.id.in_(eval(album.tags))).all()
+        if album.tags:
+            tags = album.tags if album.tags.find(',') > -1 else f"{album.tags},"
+            tags = session.query(XiurenTag).filter(XiurenTag.id.in_(eval(tags))).all()
+        else:
+            tags = []
 
         rows = session.query(func.count(XiurenImage.id)).filter(XiurenImage.album_id == int(id), XiurenImage.is_enabled == 1).scalar()
         page = PageAll(rows, page_index, page_size=3)
