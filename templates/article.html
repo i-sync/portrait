@@ -16,7 +16,13 @@
 <meta name="twitter:card" content="summary_large_image" />
 {% endblock %}
 
-{% block head %} {% endblock %}
+{% block head %} 
+<style>
+.text-divider{margin: 2em 0; line-height: 0; text-align: center;}
+.text-divider span{background-color: #fff; padding: 1em;}
+.text-divider:before{ content: " "; display: block; border-top: 1px solid #e3e3e3; border-bottom: 1px solid #f7f7f7;}
+</style>
+{% endblock %}
 
 {% block content %}
 
@@ -57,6 +63,39 @@
         <img data-src="{{image.image_url}}" src="/static/images/loader.gif" class="img-fluid w-100 lazy mb-2" alt="{{data.album.title}}" referrerpolicy="no-referrer" />
         {% endfor %} 
     {{ pagination_all('?page=', data.page) }}
+
+
+    <div class="row text-center">
+        <h2 class="text-divider"><span>相关推荐</span></h2>
+    </div>
+
+    <div class="row row-cols-2 row-cols-md-5 g-4 my-3">
+
+        {% for album in data.related %}
+        <div class="col">
+            <a class="card-link" href="/{{album.category.name}}/{{album.id}}" alt="{{album.title}}" title="{{album.title}}">
+                <div class="card h-100">
+                    <img class="card-img-top lazy" src="/static/images/loader.gif" data-src="{{album.cover}}" alt="{{album.title}}" referrerpolicy="no-referrer" />
+                    <span class=" author position-absolute badge rounded-pill bg-secondary">
+                        <object>
+                            <a class="card-link" href="/search/?s={{album.author}}" alt="{{album.author}}" title="{{album.author}}">
+                                {{album.author}}
+                            </a>
+                        </object>
+                    </span>
+                    <div class="card-title mx-1 my-1">
+                        {{album.digest}}
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted"><i class="bi bi-calendar-date"></i> {{album.origin_created_at|date}}</small>
+                        <small class="text-muted float-right"><i class="bi bi-eye"></i> {{album.view_count}}</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+
+    </div>
 </div>
 {% endblock %} {% block bodyscript %}
 

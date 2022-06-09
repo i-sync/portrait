@@ -267,6 +267,11 @@ async def article(category, id, request: Request, page = "1"):
         page = PageAll(rows, page_index, page_size=3)
 
         images = session.query(XiurenImage).filter(XiurenImage.album_id == int(id), XiurenImage.is_enabled == 1).offset(page.offset).limit(page.limit).all()
+
+
+        related = session.query(XiurenAlbum).filter(XiurenAlbum.title.contains(album.author), XiurenAlbum.is_enabled == 1).limit(20).all()
+        for item in related:
+            item.category = next(x for x in categories if x.id == item.category_id)
         # if article_detail:
         #     session.expunge(article_detail)
 
@@ -279,6 +284,7 @@ async def article(category, id, request: Request, page = "1"):
         "album": album,
         "tags": tags,
         "images": images,
+        "related": related,
         "url": request.url,
         "meta": configs.meta,
         "cover": album.cover,
