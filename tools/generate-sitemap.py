@@ -35,7 +35,7 @@ def generate_sitemap_category():
     sitemap += '''
 </urlset>'''
 
-    with open("../sitemap.xml", "w+", encoding="utf-8") as f:
+    with open("../sitemap-category.xml", "w+", encoding="utf-8") as f:
         f.writelines(sitemap)
 
 
@@ -63,21 +63,38 @@ def generate_sitemap_detail(offset, limit):
     sitemap += '''
 </urlset>'''
 
-    with open(f"../sitemap-{offset}-{limit}.xml", "w+", encoding="utf-8") as f:
+    file_name = f"sitemap-{offset}-{limit}.xml"
+    with open(f"../{file_name}", "w+", encoding="utf-8") as f:
         f.writelines(sitemap)
 
+    return file_name
 
 if __name__=="__main__":
     generate_sitemap_category()
 
+    sitemap = """<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <sitemap>
+        <loc>https://portrait.viagle.cn/sitemap-category.xml</loc>
+    </sitemap>
+"""
     rows = 0
     with session_scope() as session:
         rows = session.query(func.count(XiurenAlbum.id)).filter(XiurenAlbum.is_enabled == 1).scalar()
 
-    page = Page(rows, page_index=1, page_size=5000)
+    page = Page(rows, page_index=1, page_size=500)
     for i in range(1, page.page_count + 1):
 
-        page = Page(rows, page_index=i, page_size=5000)
-        generate_sitemap_detail(page.offset, page.limit)
+        page = Page(rows, page_index=i, page_size=500)
+        file_name = generate_sitemap_detail(page.offset, page.limit)
+        sitemap += f"""
+    <sitemap>
+        <loc>https://portrait.viagle.cn/{file_name}</loc>
+    </sitemap>
+"""
 
+    sitemap += """
+</sitemapindex>"""
+
+    with open(f"../sitemap-index.xml", "w+", encoding="utf-8") as f:
+        f.writelines(sitemap)
     print("Done")
