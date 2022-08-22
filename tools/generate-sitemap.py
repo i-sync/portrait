@@ -74,7 +74,7 @@ if __name__=="__main__":
 
     sitemap = """<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <sitemap>
-        <loc>https://portrait.viagle.cn/sitemap-category.xml</loc>
+        <loc>https://portrait.knit.bid/sitemap-category.xml</loc>
     </sitemap>
 """
     rows = 0
@@ -88,7 +88,7 @@ if __name__=="__main__":
         file_name = generate_sitemap_detail(page.offset, page.limit)
         sitemap += f"""
     <sitemap>
-        <loc>https://portrait.viagle.cn/{file_name}</loc>
+        <loc>https://portrait.knit.bid/{file_name}</loc>
     </sitemap>
 """
 
