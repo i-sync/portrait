@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image" />
 {% endblock %}
 
-{% block head %} 
+{% block head %}
 <style>
 .text-divider{margin: 2em 0; line-height: 0; text-align: center;}
 .text-divider span{background-color: #fff; padding: 1em;}
@@ -61,7 +61,7 @@
     {{ pagination_all('?page=', data.page) }}
         {% for image in data.images %}
         <img data-src="{{image.image_url}}" src="/static/images/loader.gif" class="img-fluid w-100 lazy mb-2" alt="{{data.album.title}}" referrerpolicy="no-referrer" />
-        {% endfor %} 
+        {% endfor %}
     {{ pagination_all('?page=', data.page) }}
 
 
@@ -70,6 +70,10 @@
     </div>
 
     <div class="row row-cols-2 row-cols-md-5 g-4 my-3">
+
+
+        <!-- portrait recommendation widget - (Recommendation Widget) -->
+        <script type="application/javascript" data-idzone="4770502" src="https://a.realsrv.com/nativeads-v2.js" ></script>
 
         {% for album in data.related %}
         <div class="col">
