@@ -43,6 +43,16 @@
 
 {% block content %}
 
+<div class="container mb-3">
+    <div class="text-center">
+        {% if data.keyword %}
+            <h1>{{data.keyword}} - {{data.location}}</h1>
+        {% else %}
+            <h1>{{data.location}} - {{ data.meta.site_name }}</h1>
+        {% endif %}
+    </div>
+</div>
+
 <div id="main-carousel" class="carousel slide mb-3" data-bs-ride="carousel">
     <div class="carousel-indicators">
         {% for album in data.tops %}

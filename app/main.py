@@ -142,7 +142,7 @@ async def search(s, request: Request, page = "1", order = "new"):
         page = Page(rows, page_index)
         albums = session.query(XiurenAlbum).filter(XiurenAlbum.title.contains(s), XiurenAlbum.is_enabled == 1).offset(page.offset).limit(page.limit).all()
         for album in albums:
-            album.category = next(x for x in categories if x.id == album.category_id)        
+            album.category = next(x for x in categories if x.id == album.category_id)
         tops = session.query(XiurenAlbum).filter(XiurenAlbum.is_enabled == 1).order_by(desc(XiurenAlbum.view_count)).limit(10).all()
         for album in tops:
             album.category = next(x for x in categories if x.id == album.category_id)
@@ -153,6 +153,7 @@ async def search(s, request: Request, page = "1", order = "new"):
         "tops": tops,
         "albums": albums,
         "location": "搜索结果",
+        "keyword": s,
         "url": request.url,
         "meta": configs.meta,
         "cover": tops[0].cover if len(tops) else f"{configs.meta.site_url}/static/images/cover.jpg",
@@ -171,10 +172,10 @@ async def sort(order, request: Request):
     with session_scope() as session:
         if order == "new":
             albums = session.query(XiurenAlbum).filter(XiurenAlbum.is_enabled == 1).order_by(desc(XiurenAlbum.origin_created_at)).limit(50).all()
-        else:            
+        else:
             albums = session.query(XiurenAlbum).filter(XiurenAlbum.is_enabled == 1).order_by(desc(XiurenAlbum.view_count)).limit(50).all()
         for album in albums:
-            album.category = next(x for x in categories if x.id == album.category_id)        
+            album.category = next(x for x in categories if x.id == album.category_id)
         tops = session.query(XiurenAlbum).filter(XiurenAlbum.is_enabled == 1).order_by(desc(XiurenAlbum.view_count)).limit(10).all()
         for album in tops:
             album.category = next(x for x in categories if x.id == album.category_id)
@@ -220,8 +221,8 @@ async def category(category, request: Request, page = "1", order = "new"):
     page_index = get_page_index(page)
     with session_scope() as session:
         rows = session.query(func.count(XiurenAlbum.id)).filter(XiurenAlbum.category_id == category.id, XiurenAlbum.is_enabled == 1).scalar()
-        page = Page(rows, page_index)        
-        
+        page = Page(rows, page_index)
+
         albums = session.query(XiurenAlbum).filter(XiurenAlbum.category_id == category.id, XiurenAlbum.is_enabled == 1).offset(page.offset).limit(page.limit).all()
         for album in albums:
             album.category = next(x for x in categories if x.id == album.category_id)
