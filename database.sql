@@ -16,6 +16,7 @@ create table xiuren_album (
     `category_id` int not null,
     `tags` varchar(100) null,
     `cover` varchar(200) null,
+    `cover_backup` varchar(200) null,
     `author` varchar(100) null,
     `view_count` int unsigned not null default 0,
     `origin_link` varchar(200) null,
@@ -30,11 +31,13 @@ create table xiuren_album (
 ) engine=innodb default charset=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- alter table xiuren_album change cagetory_id category_id int;
+-- alter table xiuren_album add column `cover_backup` varchar(200) null after `cover`;
 
 create table xiuren_images (
     `id` int not null AUTO_INCREMENT,
     `album_id` int not null,
     `image_url` varchar(200) not null,
+    `backup_url` varchar(200) null,
     `created_at` real not null,
     `updated_at` real not null,
     `is_enabled` bool not null default 1,
@@ -42,6 +45,8 @@ create table xiuren_images (
     key `idx_created_at` (`created_at`),
     primary key (`id`)
 ) engine=innodb default charset=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- alter table xiuren_images add column `backup_url` varchar(200) null after `image_url`;
 
 create table xiuren_categories (
     `id` int not null AUTO_INCREMENT,

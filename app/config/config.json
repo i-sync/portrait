@@ -37,5 +37,11 @@
       "name": "XX爱妹子",
       "link": "https://xx.knit.bid"
     }
-  ]
+  ],
+  "b2": {
+    "endpoint": "https://s3.us-west-004.backblazeb2.com",
+    "bucket_name": "xxxxxxxx",
+    "application_key_id": "xxxxxxxxxxxxxxxxxxxx",
+    "application_key": "xxxxxxxxxxxxxxxxxxxxxxxxxx"
+  }
 }

@@ -16,3 +16,4 @@ pyyaml
 ua-parser
 user-agents
 slowapi
+boto3
