@@ -93,7 +93,8 @@ if __name__ == "__main__":
 
 
     while True:
-        rows = session.query(func.count(XiurenAlbum.id)).filter(XiurenAlbum.cover_backup == None).scalar()
+        with session_scope() as session:
+            rows = session.query(func.count(XiurenAlbum.id)).filter(XiurenAlbum.cover_backup == None).scalar()
         if rows:
             image_backup_album()
             time.sleep(5)
@@ -101,7 +102,8 @@ if __name__ == "__main__":
             break
 
     while True:
-        rows = session.query(func.count(XiurenImage.id)).filter(XiurenImage.album_id == int(id), XiurenImage.is_enabled == 1).scalar()
+        with session_scope() as session:
+            rows = session.query(func.count(XiurenImage.id)).filter(XiurenImage.album_id == int(id), XiurenImage.is_enabled == 1).scalar()
         if rows:
             image_backup_image()
             time.sleep(5)
