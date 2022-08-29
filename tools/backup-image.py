@@ -43,13 +43,14 @@ def image_backup_album():
             b2_file_path = re.split('/', cover.replace("https://", "").replace("http://", ""), maxsplit=1)[-1]
             print(b2_file_path)
             # check b2 file if exists
-            if not key_exists(b2, bucket_name, b2_file_path):
+            if True: # not key_exists(b2, bucket_name, b2_file_path):
                 # not exist , download file and upload
                 buf = get_image_content(cover)
                 if buf:
                     b2.Object(bucket_name, b2_file_path).put(Body=buf, ContentType=f"image/{ext}")
                 else:
                     print(f"image download failed, {cover}")
+                    continue
             else:
                 #exists , skip upload,
                 print(b2_file_path, "exists on b2, skip...")
@@ -74,13 +75,14 @@ def image_backup_image():
             b2_file_path = re.split('/', image_url.replace("https://", "").replace("http://", ""), maxsplit=1)[-1]
             print(b2_file_path)
             # check b2 file if exists
-            if not key_exists(b2, bucket_name, b2_file_path):
+            if True: # not key_exists(b2, bucket_name, b2_file_path):
                 # not exist , download file and upload
                 buf = get_image_content(image_url)
                 if buf:
                     b2.Object(bucket_name, b2_file_path).put(Body=buf, ContentType=f"image/{ext}")
                 else:
                     print(f"image download failed, {image_url}")
+                    continue
             else:
                 #exists , skip upload,
                 print(b2_file_path, "exists on b2, skip...")
