@@ -109,6 +109,14 @@ class XiurenImagePipeline:
                 else:
                     print(f"album not found, id:{id}")
                 session.commit()
+        elif ct == "image":
+            with session_scope() as session:
+                image = session.query(XiurenImage).filter(XiurenImage.id == id).first()
+                if image:
+                    image.backup_url = b2_key
+                else:
+                    print(f"image not found, id:{id}")
+                session.commit()
 
 class XiurenCategoriesPipeline:
 

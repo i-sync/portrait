@@ -25,24 +25,29 @@ class ImageSpider(scrapy.Spider):
     def __init__(self):
         super().__init__()
         with session_scope() as session:
-            albums = session.query(XiurenAlbum).filter(XiurenAlbum.cover_backup == None).all()
-            for album in albums:
-                self.datas.append({"id": album.id, "cover": album.cover})
+            # xiuren album
+            # albums = session.query(XiurenAlbum).filter(XiurenAlbum.cover_backup == None).all()
+            # for album in albums:
+            #     self.datas.append({"id": album.id, "cover": album.cover})
                 # break
+            # xiuren image
+            images = session.query(XiurenImage).filter(XiurenImage.backup_url == None).limit(1).all()
+            for image in images:
+                self.datas.append({"id": image.id, "image_url": image.image_url})
 
     def start_requests(self):
         for data in self.datas:
-            yield scrapy.Request(url=data["cover"], callback=self.parse, meta={"id": data["id"], "cover": data["cover"]})
+            yield scrapy.Request(url=data["image_url"], callback=self.parse, meta={"id": data["id"], "image_url": data["image_url"]})
 
     def parse(self, response):
 
         if response.status == 200:
             item = XiurenImageItem()
-            item["ct"] = "album"
+            item["ct"] = "image"
             item["content"] = response.body
             item["id"] = response.meta["id"]
-            cover = response.meta["cover"]
+            image_url = response.meta["image_url"]
 
-            item["ext"] = cover.split(".")[-1]
-            item["b2_key"] = re.split('/', cover.replace("https://", "").replace("http://", ""), maxsplit=1)[-1]
+            item["ext"] = image_url.split(".")[-1]
+            item["b2_key"] = re.split('/', image_url.replace("https://", "").replace("http://", ""), maxsplit=1)[-1]
             yield item
