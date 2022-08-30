@@ -24,3 +24,10 @@ class XiurenAlbumItem(scrapy.Item):
 class XiurenCategoryItem(scrapy.Item):
     name = scrapy.Field()
     title = scrapy.Field()
+
+class XiurenImageItem(scrapy.Item):
+    b2_key = scrapy.Field()
+    content = scrapy.Field()
+    id = scrapy.Field()
+    ct = scrapy.Field()
+    ext = scrapy.Field()

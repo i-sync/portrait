@@ -5,10 +5,13 @@
 
 
 # useful for handling different item types with a single interface
-import os, sys, time
+import io, os, sys, time
 sys.path.append("..")
 from itemadapter import ItemAdapter
+from app.library.config import configs
 from app.library.models import session_scope, XiurenAlbum, XiurenImage, XiurenCategory, XiurenTag
+
+from app.library.b2s3 import get_b2_resource, key_exists
 
 class XiurenAlbumPipeline:
     def process_item(self, item, spider):
@@ -25,7 +28,7 @@ class XiurenAlbumPipeline:
                 category = session.query(XiurenCategory).filter(XiurenCategory.name == item["category_name"]).first()
             tag_ids = []
             commit_flag = False
-            with session_scope() as session:                
+            with session_scope() as session:
                 for t in item["tags"]:
                     tag = session.query(XiurenTag).filter(XiurenTag.title == t).first()
                     if tag:
@@ -43,7 +46,7 @@ class XiurenAlbumPipeline:
                 if commit_flag:
                     session.commit()
                 print("tags commit!")
-            
+
             album = XiurenAlbum()
             album.title = item["title"]
             album.digest = item["digest"]
@@ -75,15 +78,38 @@ class XiurenAlbumPipeline:
 
                 session.commit()
                 print("album and image commit.")
-            
+
 
         return item
 
 class XiurenImagePipeline:
     def process_item(self, item, spider):
-        print(item)
-        return item
-        
+        if not item:
+            return
+
+        print(item["id"], item["ct"], item["b2_key"], item["ext"])
+        #return item
+
+        b2 = get_b2_resource()
+        bucket_name = configs.b2.bucket_name
+
+        id = item["id"]
+        ct = item["ct"]
+        buf = io.BytesIO(item["content"])
+        ext = item["ext"]
+        b2_key = item["b2_key"]
+        b2.Object(bucket_name, b2_key).put(Body=buf, ContentType=f"image/{ext}")
+        print(f"image upload b2 finish, b2_key:{b2_key}")
+
+        if ct == "album":
+            with session_scope() as session:
+                album = session.query(XiurenAlbum).filter(XiurenAlbum.id == id).first()
+                if album:
+                    album.cover_backup = b2_key
+                else:
+                    print(f"album not found, id:{id}")
+                session.commit()
+
 class XiurenCategoriesPipeline:
 
     def process_item(self, item, spider):
