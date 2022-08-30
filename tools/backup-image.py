@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
     while True:
         with session_scope() as session:
-            rows = session.query(func.count(XiurenImage.id)).filter(XiurenImage.album_id == int(id), XiurenImage.is_enabled == 1).scalar()
+            rows = session.query(func.count(XiurenImage.id)).filter(XiurenImage.backup_url == None).scalar()
         if rows:
             image_backup_image()
             time.sleep(5)
