@@ -33,7 +33,7 @@ class ImageSpider(scrapy.Spider):
             # xiuren image
             images = session.query(XiurenImage).filter(XiurenImage.backup_url == None).limit(1).all()
             for image in images:
-                self.datas.append({"id": image.id, "image_url": image.image_url})
+                self.datas.append({"id": image.id, "image_url": image.image_url.replace("www.xiurenb.com","p.xiurenb.cc")})
 
     def start_requests(self):
         for data in self.datas:
