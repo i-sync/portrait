@@ -42,7 +42,7 @@ def test_proxy(proxies):
     """
     targets = [
         "https://www.xiurenb.com/",
-        "https://www.google.com",
+        #"https://www.google.com",
         #"https://www.baidu.com",
         #"https://www.viagle.cn"
     ]
@@ -62,12 +62,12 @@ path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
 def get_proxy():
     with open(f"{path}/proxies.json", "r+", encoding="utf-8") as f:
         proxys = json.load(f)
-    
+
     if not len(proxys):
         return None
     for i in range(len(proxys)*2):
         index = random.randint(0, len(proxys) - 1)
-        proxy = proxys[index]        
+        proxy = proxys[index]
         host = proxy["ip"]
         port = proxy["port"]
         protocol = proxy["protocols"]
@@ -78,16 +78,16 @@ def get_proxy():
 
         #if text_proxy(proxies):
         return proxies
-    
+
     return None
 
 def test_all_proxy():
     with open(f"{path}/proxies.json", "r+", encoding="utf-8") as f:
         proxys = json.load(f)
-    
+
     if not len(proxys):
         return None
-    for proxy in proxys:    
+    for proxy in proxys:
         host = proxy["ip"]
         port = proxy["port"]
         protocol = proxy["protocols"]
@@ -97,10 +97,40 @@ def test_all_proxy():
         }
 
         test_proxy(proxies)
-    
+
     return None
+
+
+def gen_valid_proxy():
+
+    with open(f"{path}/proxies-all.json", "r+", encoding="utf-8") as f:
+        proxys = json.load(f)
+
+    if not len(proxys):
+        return None
+
+    valid_list = []
+    for proxy in proxys:
+        host = proxy["ip"]
+        port = proxy["port"]
+        protocol = proxy["protocols"]
+        proxies = {
+            "http": f"{protocol}://{host}:{port}",
+            "https": f"{protocol}://{host}:{port}"
+        }
+
+        if test_proxy(proxies):
+            valid_list.append(proxy)
+
+    if len(valid_list):
+        with open(f"{path}/proxies.json", "w+", encoding="utf-8") as f:
+            json.dump(valid_list, f, indent=4)
+    print("Done")
+    return None
+
 
 if __name__ == "__main__":
     print(__file__)
     print(get_proxy())
-    test_all_proxy()
+    #test_all_proxy()
+    gen_valid_proxy()
