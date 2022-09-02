@@ -11,7 +11,7 @@ from itemadapter import ItemAdapter
 from app.library.config import configs
 from app.library.models import session_scope, XiurenAlbum, XiurenImage, XiurenCategory, XiurenTag
 
-from app.library.b2s3 import get_b2_resource, key_exists
+from app.library.b2s3 import get_b2_client, get_b2_resource, key_exists
 from app.library.b2 import get_b2_api, get_b2_bucket
 
 class XiurenAlbumPipeline:
@@ -91,8 +91,10 @@ class XiurenImagePipeline:
         print(item["id"], item["ct"], item["b2_key"], item["ext"])
         #return item
 
-        ''' boto3
-        b2 = get_b2_resource()
+        # boto3
+
+        # b2 = get_b2_resource()
+        b2_client = get_b2_client()
         bucket_name = configs.b2.bucket_name
 
         id = item["id"]
@@ -100,7 +102,8 @@ class XiurenImagePipeline:
         buf = io.BytesIO(item["content"])
         ext = item["ext"]
         b2_key = item["b2_key"]
-        b2.Object(bucket_name, b2_key).put(Body=buf, ContentType=f"image/{ext}")
+        # b2.Object(bucket_name, b2_key).put(Body=buf, ContentType=f"image/{ext}")
+        b2_client.put_object(Body=item["content"], Bucket=bucket_name, Key=b2_key, ContentType=f"image/{ext}")
         print(f"image upload b2 finish, b2_key:{b2_key}")
 
         if ct == "album":
@@ -119,9 +122,10 @@ class XiurenImagePipeline:
                 else:
                     print(f"image not found, id:{id}")
                 session.commit()
-        '''
+
 
         # b2sdk
+        '''
         bucket = get_b2_bucket()
 
         id = item["id"]
@@ -149,6 +153,7 @@ class XiurenImagePipeline:
                 else:
                     print(f"image not found, id:{id}")
                 session.commit()
+        '''
 
 class XiurenCategoriesPipeline:
 
