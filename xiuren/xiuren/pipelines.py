@@ -12,6 +12,7 @@ from app.library.config import configs
 from app.library.models import session_scope, XiurenAlbum, XiurenImage, XiurenCategory, XiurenTag
 
 from app.library.b2s3 import get_b2_resource, key_exists
+from app.library.b2 import get_b2_api, get_b2_bucket
 
 class XiurenAlbumPipeline:
     def process_item(self, item, spider):
@@ -90,6 +91,7 @@ class XiurenImagePipeline:
         print(item["id"], item["ct"], item["b2_key"], item["ext"])
         #return item
 
+        ''' boto3
         b2 = get_b2_resource()
         bucket_name = configs.b2.bucket_name
 
@@ -99,6 +101,36 @@ class XiurenImagePipeline:
         ext = item["ext"]
         b2_key = item["b2_key"]
         b2.Object(bucket_name, b2_key).put(Body=buf, ContentType=f"image/{ext}")
+        print(f"image upload b2 finish, b2_key:{b2_key}")
+
+        if ct == "album":
+            with session_scope() as session:
+                album = session.query(XiurenAlbum).filter(XiurenAlbum.id == id).first()
+                if album:
+                    album.cover_backup = b2_key
+                else:
+                    print(f"album not found, id:{id}")
+                session.commit()
+        elif ct == "image":
+            with session_scope() as session:
+                image = session.query(XiurenImage).filter(XiurenImage.id == id).first()
+                if image:
+                    image.backup_url = b2_key
+                else:
+                    print(f"image not found, id:{id}")
+                session.commit()
+        '''
+
+        # b2sdk
+        bucket = get_b2_bucket()
+
+        id = item["id"]
+        ct = item["ct"]
+        buf = item["content"]
+        ext = item["ext"]
+        b2_key = item["b2_key"]
+
+        bucket.upload_bytes(buf, b2_key, content_type=f"image/{ext}")
         print(f"image upload b2 finish, b2_key:{b2_key}")
 
         if ct == "album":

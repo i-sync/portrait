@@ -17,3 +17,4 @@ ua-parser
 user-agents
 slowapi
 boto3
+b2sdk
