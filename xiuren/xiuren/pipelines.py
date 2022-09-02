@@ -97,9 +97,9 @@ class XiurenImagePipeline:
         b2_client = get_b2_client()
         bucket_name = configs.b2.bucket_name
 
-        id = item["id"]
+        image_id = item["id"]
         ct = item["ct"]
-        buf = io.BytesIO(item["content"])
+        #buf = io.BytesIO(item["content"])
         ext = item["ext"]
         b2_key = item["b2_key"]
         # b2.Object(bucket_name, b2_key).put(Body=buf, ContentType=f"image/{ext}")
@@ -108,19 +108,19 @@ class XiurenImagePipeline:
 
         if ct == "album":
             with session_scope() as session:
-                album = session.query(XiurenAlbum).filter(XiurenAlbum.id == id).first()
+                album = session.query(XiurenAlbum).filter(XiurenAlbum.id == image_id).first()
                 if album:
                     album.cover_backup = b2_key
                 else:
-                    print(f"album not found, id:{id}")
+                    print(f"album not found, image_id:{image_id}")
                 session.commit()
         elif ct == "image":
             with session_scope() as session:
-                image = session.query(XiurenImage).filter(XiurenImage.id == id).first()
+                image = session.query(XiurenImage).filter(XiurenImage.id == image_id).first()
                 if image:
                     image.backup_url = b2_key
                 else:
-                    print(f"image not found, id:{id}")
+                    print(f"image not found, image_id:{image_id}")
                 session.commit()
 
 
