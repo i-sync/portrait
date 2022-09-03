@@ -23,8 +23,8 @@ async def proxy_middleware(spider_ins, request):
     request.metadata["proxy"] = proxy["https"]
 
     # https://github.com/howie6879/ruia/issues/128
-    # request.aiohttp_kwargs = {"proxy":  proxy["https"] } # "http://127.0.0.1:8123" }
-    request.aiohttp_kwargs = {"proxy": "socks5://127.0.0.1:1080" }
+    request.aiohttp_kwargs = {"proxy":  proxy["https"] } # "http://127.0.0.1:8123" }
+    # request.aiohttp_kwargs = {"proxy": "socks5://127.0.0.1:1080" }
 
     # https://github.com/lixi5338619/asyncpy
     # request.aiohttp_kwargs.update({"proxy": proxy["https"]})
@@ -49,5 +49,5 @@ class ProxySpider(Spider):
         print(f'proxy: {response.metadata["proxy"]}, res: {res}')
 
 if __name__ == "__main__":
-    # ProxySpider.start(middleware=middleware)
-    ProxySpider.start()
+    ProxySpider.start(middleware=middleware)
+    # ProxySpider.start()
