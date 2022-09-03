@@ -18,3 +18,5 @@ user-agents
 slowapi
 boto3
 b2sdk
+ruia[uvloop]
+ruia_ua
