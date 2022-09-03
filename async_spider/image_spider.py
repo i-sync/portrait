@@ -11,19 +11,21 @@ import aiofiles
 from ruia import *
 
 
-middleware = Middleware()
+# https://github.com/aio-libs/aiohttp/discussions/6044
+setattr(asyncio.sslproto._SSLProtocolTransport, "_start_tls_compatible", True)
 
+middleware = Middleware()
 
 @middleware.request
 async def proxy_middleware(spider_ins, request):
 
     proxy = get_proxy()
-    print(proxy["http"], request.url)
+    print(proxy["https"], request.url)
 
     # https://github.com/howie6879/ruia/issues/128
     # request.aiohttp_kwargs = {"proxy": "http://0.0.0.0:1087"}
     # https://github.com/lixi5338619/asyncpy
-    request.aiohttp_kwargs.update({"proxy": proxy["http"]})
+    request.aiohttp_kwargs.update({"proxy": proxy["https"]})
     # Just operate request object, and do not return anything.
 
 class ImageSpider(Spider):
