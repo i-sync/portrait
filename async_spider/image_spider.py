@@ -47,7 +47,19 @@ class ImageSpider(Spider):
 
     async def parse(self, response):
         print(response.status)
-        if response.status > -1 and response.status < 400:
+        if response.status == -1:
+            image_id = response.metadata["image_id"]
+            image_url = response.metadata["image_url"]
+            with session_scope() as session:
+                image = session.query(XiurenImage).filter(XiurenImage.id == image_id).first()
+                if image:
+                    image.backup_url = "error"
+                else:
+                    print(f"image not found, image_id:{image_id}")
+                session.commit()
+                print(f"image download error!: id: {image_id},  url: {image_url}")
+
+        elif response.status < 400:
             image_id = response.metadata["image_id"]
             image_url = response.metadata["image_url"]
 
