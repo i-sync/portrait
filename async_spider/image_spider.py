@@ -1,4 +1,4 @@
-import io, os, sys, time
+import io, os, re, sys, time
 import typing
 sys.path.append("..")
 from app.library.config import configs
@@ -10,6 +10,8 @@ from app.library.b2s3 import get_b2_client, get_b2_resource, key_exists
 import aiofiles
 from ruia import *
 
+
+import asyncio
 
 # https://github.com/aio-libs/aiohttp/discussions/6044
 setattr(asyncio.sslproto._SSLProtocolTransport, "_start_tls_compatible", True)
@@ -45,38 +47,39 @@ class ImageSpider(Spider):
 
     async def parse(self, response):
         print(response.status)
-        image_id = response.metadata["image_id"]
-        image_url = response.metadata["image_url"]
+        if response.status < 400:
+            image_id = response.metadata["image_id"]
+            image_url = response.metadata["image_url"]
 
-        ext = image_url.split(".")[-1]
-        b2_key = re.split('/', image_url.replace("https://", "").replace("http://", ""), maxsplit=1)[-1]
+            ext = image_url.split(".")[-1]
+            b2_key = re.split('/', image_url.replace("https://", "").replace("http://", ""), maxsplit=1)[-1]
 
-        print(f"{image_id}, {b2_key}, start time: {time.time()}")
+            print(f"{image_id}, {b2_key}, start time: {time.time()}")
 
-        try:
-            content = await response.read()
-        except Exception as e:
-            print(e)
-        else:
-            # boto3, upload to b2
+            try:
+                content = await response.read()
+            except Exception as e:
+                print(e)
+            else:
+                # boto3, upload to b2
 
-            # b2 = get_b2_resource()
-            b2_client = get_b2_client()
-            bucket_name = configs.b2.bucket_name
+                # b2 = get_b2_resource()
+                b2_client = get_b2_client()
+                bucket_name = configs.b2.bucket_name
 
-            # b2.Object(bucket_name, b2_key).put(Body=buf, ContentType=f"image/{ext}")
-            b2_client.put_object(Body=content, Bucket=bucket_name, Key=b2_key, ContentType=f"image/{ext}")
-            print(f"image upload b2 finish, b2_key:{b2_key}")
+                # b2.Object(bucket_name, b2_key).put(Body=buf, ContentType=f"image/{ext}")
+                b2_client.put_object(Body=content, Bucket=bucket_name, Key=b2_key, ContentType=f"image/{ext}")
+                print(f"image upload b2 finish, b2_key:{b2_key}")
 
-            with session_scope() as session:
-                image = session.query(XiurenImage).filter(XiurenImage.id == image_id).first()
-                if image:
-                    image.backup_url = b2_key
-                else:
-                    print(f"image not found, image_id:{image_id}")
-                session.commit()
+                with session_scope() as session:
+                    image = session.query(XiurenImage).filter(XiurenImage.id == image_id).first()
+                    if image:
+                        image.backup_url = b2_key
+                    else:
+                        print(f"image not found, image_id:{image_id}")
+                    session.commit()
 
-        print(f"{image_id}, {b2_key}, end time: {time.time()}")
+            print(f"{image_id}, {b2_key}, end time: {time.time()}")
 
 
 if __name__ == "__main__":
