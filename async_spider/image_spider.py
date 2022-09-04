@@ -47,7 +47,7 @@ class ImageSpider(Spider):
 
     async def parse(self, response):
         print(response.status)
-        if response.status < 400:
+        if response.status > -1 and response.status < 400:
             image_id = response.metadata["image_id"]
             image_url = response.metadata["image_url"]
 
