@@ -7,10 +7,8 @@ import asyncio
 import aiohttp
 from ruia import *
 
-from aiosocksy.connector import ProxyConnector, ProxyClientRequest
-
 # https://github.com/aio-libs/aiohttp/discussions/6044
-# setattr(asyncio.sslproto._SSLProtocolTransport, "_start_tls_compatible", True)
+setattr(asyncio.sslproto._SSLProtocolTransport, "_start_tls_compatible", True)
 
 middleware = Middleware()
 
@@ -39,9 +37,9 @@ class ProxySpider(Spider):
 
     async def process_start_urls(self):
         for url in self.start_urls:
-            request_session = aiohttp.ClientSession(connector=ProxyConnector(), request_class=ProxyClientRequest)
+            # self.request_session = aiohttp.ClientSession(connector=ProxyConnector(), request_class=ProxyClientRequest)
             # yield self.request(url=image_url, callback=self.parse, metadata={"image_id": image.id, "image_url": image_url}, request_session=request_session)
-            yield self.request(url=url, callback=self.parse, request_session=request_session)
+            yield self.request(url=url, callback=self.parse)
 
     async def parse(self, response):
         res = await response.text()
