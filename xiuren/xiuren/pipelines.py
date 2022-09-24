@@ -5,7 +5,7 @@
 
 
 # useful for handling different item types with a single interface
-import io, os, sys, time
+import io, re, os, sys, time
 sys.path.append("..")
 from itemadapter import ItemAdapter
 from app.library.config import configs
@@ -14,10 +14,15 @@ from app.library.models import session_scope, XiurenAlbum, XiurenImage, XiurenCa
 from app.library.b2s3 import get_b2_client, get_b2_resource, key_exists
 from app.library.b2 import get_b2_api, get_b2_bucket
 
+from scrapy.pipelines.images import ImagesPipeline
+from scrapy.utils.misc import md5sum
+from scrapy.exceptions import DropItem
+import scrapy
+
 class XiurenAlbumPipeline:
     def process_item(self, item, spider):
         print(item)
-        if not len(item["images"]):
+        if not len(item["image_paths"]):
             print("album doesn't contains images, skip.", item["title"], item["origin_link"])
             return
         with session_scope() as session:
@@ -53,6 +58,7 @@ class XiurenAlbumPipeline:
             album.digest = item["digest"]
             album.description = item["description"]
             album.cover = item["cover"]
+            album.cover_backup = item["cover_backup"]
             album.author = item["author"]
             album.origin_link = item["origin_link"]
             album.origin_created_at = item["origin_created_at"]
@@ -67,10 +73,11 @@ class XiurenAlbumPipeline:
                 session.add(album)
                 session.flush()
                 album_id = album.id
-                for img in item["images"]:
+                for img in item["image_paths"]:
                     image = XiurenImage()
                     image.album_id = album_id
-                    image.image_url = img
+                    image.image_url = img['url']
+                    image.backup_url = img['path']
                     image.created_at = time.time()
                     image.updated_at = time.time()
                     image.is_enabled = 1
@@ -82,6 +89,44 @@ class XiurenAlbumPipeline:
 
 
         return item
+
+class XiurenMediaPipeline(ImagesPipeline):
+    b2 = get_b2_resource()
+    bucket_name = configs.b2.bucket_name
+
+    headers = {}
+    def file_path(self, request, response=None, info=None, *, item=None):
+        return re.split('/', request.url.replace("https://", "").replace("http://", ""), maxsplit=1)[-1]
+
+    def get_media_requests(self, item, info):
+        for image_url in item['image_urls']:
+            self.headers["referer"] = item["origin_link"]
+            yield scrapy.Request(image_url, headers=self.headers)
+
+    def item_completed(self, results, item, info):
+        image_paths = [x for ok, x in results if ok]
+        #print(image_paths)
+        if not image_paths:
+            raise DropItem("Item contains no images")
+
+        item['image_paths'] = image_paths
+        return item
+
+    def file_downloaded(self, response, request, info, *, item=None):
+        path = self.file_path(request, response=response, info=info, item=item)
+        buf = io.BytesIO(response.body)
+        checksum = md5sum(buf)
+        buf.seek(0)
+        #self.store.persist_file(path, buf, info)
+
+        ext =  request.url.split(".")[-1]
+
+        self.b2.Object(self.bucket_name, path).put(Body=buf, ContentType=f"image/{ext}")
+        # b2_client.put_object(Body=buf, Bucket=bucket_name, Key=b2_key, ContentType=f"image/{ext}")
+
+        print(f"image upload b2 finish, b2_key:{path}")
+
+        return checksum
 
 class XiurenImagePipeline:
     def process_item(self, item, spider):

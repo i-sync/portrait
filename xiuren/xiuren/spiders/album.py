@@ -8,7 +8,8 @@ from xiuren.items import XiurenAlbumItem
 class AlbumSpider(scrapy.Spider):
     name = 'album'
     #allowed_domains = ['baidu.com']
-    base_url = "https://www.xiurenb.com"
+    base_url = "https://www.xiurenb.cc"
+    base_p_url = "https://p.xiurenb.cc"
     # page_number = 1
     start_urls = []
 
@@ -18,7 +19,8 @@ class AlbumSpider(scrapy.Spider):
             #'xiuren.middlewares.XiurenProxyMiddleware': 543,
         },
         'ITEM_PIPELINES': {
-            'xiuren.pipelines.XiurenAlbumPipeline': 300,
+            'xiuren.pipelines.XiurenMediaPipeline': 1,
+            'xiuren.pipelines.XiurenAlbumPipeline': 300
         }
     }
 
@@ -33,16 +35,16 @@ class AlbumSpider(scrapy.Spider):
     def start_requests(self):
         for url in self.start_urls:
             yield scrapy.Request(url=url, callback=self.parse, meta={"page_number": 1})
-    
+
     def sub_detail_parse(self, response):
         # time.sleep(random.random())
         item = response.meta["item"]
         pages = response.meta["pages"]
-        
+
         images = response.xpath("//div[@class='content']/p/img")
         for img in images:
             link = img.xpath("@src").extract_first()
-            item["images"].append(f"{self.base_url}{link}")
+            item["image_urls"].append(f"{self.base_p_url}{link}")
 
         if len(pages):
             link = pages.pop(0)
@@ -66,19 +68,20 @@ class AlbumSpider(scrapy.Spider):
         item["digest"] = digest
         item["description"] = ' '.join(description.split())
         item["origin_link"] = response.request.url
-        item["cover"] = f"{self.base_url}{cover}"
-        item["images"] = []
+        item["cover"] = f"{self.base_p_url}{cover}"
+        item["cover_backup"] = cover.strip('/')
+        item["image_urls"] = []
 
         images = response.xpath("//div[@class='content']/p/img")
         for img in images:
             link = img.xpath("@src").extract_first()
-            item["images"].append(f"{self.base_url}{link}")
+            item["image_urls"].append(f"{self.base_p_url}{link}")
 
         pages = response.xpath("(//div[@class='page'])[1]/a/@href").extract()[1:-1]
         if pages and len(pages) > 0:
             link = pages.pop(0)
             yield scrapy.Request(url = f"{self.base_url}{link}", callback=self.sub_detail_parse, meta={"item": item, "pages": pages})
-        else:  
+        else:
             yield item
 
     def parse(self, response):
@@ -97,7 +100,7 @@ class AlbumSpider(scrapy.Spider):
             item["author"] = author
             item["category_name"] = category_name
             yield scrapy.Request(url = f"{self.base_url}{link}", callback=self.detail_parse, meta={"item": item, "request_type": "album"})
-            
+            # break
 
         page_number = response.meta["page_number"] if "page_number" in response.meta else 1
         page_number += 1

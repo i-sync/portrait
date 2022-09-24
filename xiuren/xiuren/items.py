@@ -16,10 +16,12 @@ class XiurenAlbumItem(scrapy.Item):
     category_name = scrapy.Field()
     tags = scrapy.Field()
     cover = scrapy.Field()
+    cover_backup = scrapy.Field()
     author = scrapy.Field()
     origin_link = scrapy.Field()
     origin_created_at = scrapy.Field()
-    images = scrapy.Field()
+    image_urls = scrapy.Field()
+    image_paths = scrapy.Field()
 
 class XiurenCategoryItem(scrapy.Item):
     name = scrapy.Field()
