@@ -8,7 +8,7 @@ from xiuren.items import XiurenAlbumItem
 class AlbumSpider(scrapy.Spider):
     name = 'album'
     #allowed_domains = ['baidu.com']
-    base_url = "https://www.xiurenb.cc"
+    base_url = "https://www.xiurenb.com"
     base_p_url = "https://p.xiurenb.cc"
     # page_number = 1
     start_urls = []

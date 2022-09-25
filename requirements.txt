@@ -21,3 +21,6 @@ b2sdk
 ruia[uvloop]
 ruia_ua
 aiosocksy
+b2sdk
+boto3
+pillow
