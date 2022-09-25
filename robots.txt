@@ -17,4 +17,4 @@ User-agent: *
 Allow: /
 Disallow: /plus/count
 
-Sitemap: https://portrait.knit.bid/sitemap-index.xml
+Sitemap: https://portrait.knit.bid/sitemap.xml
