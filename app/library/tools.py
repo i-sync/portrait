@@ -41,7 +41,7 @@ def test_proxy(proxies):
     test proxy is available
     """
     targets = [
-        "https://www.xiurenb.com/",
+        "https://www.xiurenb.cc/",
         #"https://www.google.com",
         #"https://www.baidu.com",
         #"https://www.viagle.cn"

@@ -41,7 +41,7 @@ class ImageSpider(Spider):
             images = session.query(XiurenImage).filter(XiurenImage.backup_url == None).limit(5).all()
             print(f"start id: {images[0].id}, end id: {images[-1].id}, total count: {len(images)}")
             for image in images:
-                image_url = image.image_url.replace("www.xiurenb.com","p.xiurenb.cc").replace("www.xiurenb.net","p.xiurenb.cc")
+                image_url = image.image_url.replace("www.xiurenb.vip","p.xiurenb.cc").replace("www.xiurenb.net","p.xiurenb.cc")
                 yield self.request(url=image_url, callback=self.parse, metadata={"image_id": image.id, "image_url": image_url})
 
 

@@ -4,7 +4,7 @@ from xiuren.items import XiurenCategoryItem
 class CategorySpider(scrapy.Spider):
     name = 'category'
     #allowed_domains = ['baidu.com']
-    start_urls = ['https://www.xiurenb.com/']
+    start_urls = ['https://www.xiurenb.cc/']
 
     custom_settings = {
         'ITEM_PIPELINES': {
