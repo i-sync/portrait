@@ -114,11 +114,20 @@ class XiurenMediaPipeline(ImagesPipeline):
         return re.split('/', request.url.replace("https://", "").replace("http://", ""), maxsplit=1)[-1]
 
     def get_media_requests(self, item, info):
+
+        # check item if is instance DropItem
+        if isinstance(item, DropItem):
+            return None
+
         for image_url in item['image_urls']:
             self.headers["referer"] = item["origin_link"]
             yield scrapy.Request(image_url, headers=self.headers)
 
     def item_completed(self, results, item, info):
+
+        # check item if is instance DropItem
+        if isinstance(item, DropItem):
+            raise  item
         image_paths = [x for ok, x in results if ok]
         #print(image_paths)
         if not image_paths:
