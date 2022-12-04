@@ -28,9 +28,9 @@ class XiurenAlbumExistsPipeline:
 
         with session_scope() as session:
             album = session.query(XiurenAlbum).filter(XiurenAlbum.title == item["title"]).first()
-            if album:
-                print("album already exists, skip.", item["title"], item["origin_link"])
-                return DropItem(f"{ item['title']}, album already exists, skip.")
+        if album:
+            print("album already exists, skip.", item["title"], item["origin_link"])
+            return DropItem(f"{ item['title']}, album already exists, skip.")
 
         return item
 
