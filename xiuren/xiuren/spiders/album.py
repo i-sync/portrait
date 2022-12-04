@@ -19,7 +19,8 @@ class AlbumSpider(scrapy.Spider):
             #'xiuren.middlewares.XiurenProxyMiddleware': 543,
         },
         'ITEM_PIPELINES': {
-            'xiuren.pipelines.XiurenMediaPipeline': 1,
+            'xiuren.pipelines.XiurenAlbumExistsPipeline': 5,
+            'xiuren.pipelines.XiurenMediaPipeline': 10,
             'xiuren.pipelines.XiurenAlbumPipeline': 300
         }
     }

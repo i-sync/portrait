@@ -19,6 +19,21 @@ from scrapy.utils.misc import md5sum
 from scrapy.exceptions import DropItem
 import scrapy
 
+
+class XiurenAlbumExistsPipeline:
+    """
+    check album title if exists in db.
+    """
+    def process_item(self, item, spider):
+
+        with session_scope() as session:
+            album = session.query(XiurenAlbum).filter(XiurenAlbum.title == item["title"]).first()
+            if album:
+                print("album already exists, skip.", item["title"], item["origin_link"])
+                return DropItem(f"{ item['title']}, album already exists, skip.")
+
+        return item
+
 class XiurenAlbumPipeline:
     def process_item(self, item, spider):
         print(item)
