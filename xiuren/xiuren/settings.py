@@ -23,6 +23,10 @@ ROBOTSTXT_OBEY = False
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 CONCURRENT_REQUESTS = 8
 
+# https://www.cnblogs.com/liuys635/p/14343282.html
+# https://docs.scrapy.org/en/latest/topics/media-pipeline.html
+MEDIA_ALLOW_REDIRECTS = True
+
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
