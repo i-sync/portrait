@@ -44,5 +44,30 @@
     "bucket_name": "xxxxxxxx",
     "application_key_id": "xxxxxxxxxxxxxxxxxxxx",
     "application_key": "xxxxxxxxxxxxxxxxxxxxxxxxxx"
-  }
+  },
+  "categories_on_home":[
+    { "id": 1, "name": "xiuren" },
+    { "id": 2, "name": "mfstar" },
+    { "id": 3, "name": "mistar" },
+    { "id": 4, "name": "mygirl" },
+    { "id": 5, "name": "imiss" },
+    { "id": 6, "name": "bololi" },
+    { "id": 7, "name": "youwu" },
+    { "id": 8, "name": "uxing" },
+    { "id": 9, "name": "miitao" },
+    { "id": 10, "name": "feilin" },
+    // { "id": 11, "name": "wings" },
+    // { "id": 12, "name": "taste" },
+    // { "id": 13, "name": "leyuan" },
+    // { "id": 14, "name": "huayan" },
+    // { "id": 15, "name": "dkgirl" },
+    // { "id": 16, "name": "mintye" },
+    // { "id": 17, "name": "youmi" },
+    // { "id": 18, "name": "candy" },
+    // { "id": 19, "name": "mtmeng" },
+    // { "id": 20, "name": "micat" },
+    // { "id": 21, "name": "huayang" },
+    // { "id": 22, "name": "xingyan" },
+    // { "id": 23, "name": "xiaoyu" }
+  ]
 }

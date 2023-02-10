@@ -105,14 +105,18 @@
     </ol>
 </nav>
 
-<div class="row row-cols-2 row-cols-md-5 g-4 my-3">
+{% for ds in data.datas %}
+<div class="row g-4 my-3">
+    <h3>{{ ds.category.title}}</h3>
+</div>
+<div class="row row-cols-2 row-cols-md-5">
 
     <!-- portrait recommendation widget - (Recommendation Widget) -->
-    <script type="application/javascript" data-idzone="4770502" src="https://a.realsrv.com/nativeads-v2.js" ></script>
+    <!-- <script type="application/javascript" data-idzone="4770502" src="https://a.realsrv.com/nativeads-v2.js" ></script> -->
 
-    {% for album in data.albums %}
-    <div class="col">
-        <a class="card-link" href="/{{album.category.name}}/{{album.id}}" alt="{{album.title}}" title="{{album.title}}">
+    {% for album in ds.albums %}
+    <div class="col my-2">
+        <a class="card-link" href="/{{ds.category.name}}/{{album.id}}" alt="{{album.title}}" title="{{album.title}}">
             <div class="card h-100">
                 <img class="card-img-top lazy" src="/static/images/cartoon-snail-loading-loading-gif-animation_2734139.png" data-src="{{data.meta.image_url}}{{album.cover_backup}}" alt="{{album.title}}" referrerpolicy="no-referrer" />
                 <span class=" author position-absolute badge rounded-pill bg-secondary">
@@ -139,7 +143,7 @@
 
 </div>
 
-{{ pagination('?page=', data.page) }}
+{% endfor %}
 
 {% endblock %}
 

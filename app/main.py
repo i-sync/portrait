@@ -104,22 +104,30 @@ def parse_user_agent(request: Request):
 async def index(request: Request, page = "1", order = "new"):
     parse_user_agent(request)
     categories = get_category()
-    page_index = get_page_index(page)
+    # page_index = get_page_index(page)
     with session_scope() as session:
         #rows = session.query(func.count(XiurenAlbum.id)).filter(XiurenAlbum.is_enabled == 1).scalar()
-        page = Page(200, page_index)
-        albums = session.query(XiurenAlbum).filter(XiurenAlbum.is_enabled == 1).order_by(func.random()).offset(page.offset).limit(page.limit).all()
-        for album in albums:
-            album.category = next(x for x in categories if x.id == album.category_id)
+        # page = Page(200, page_index)
+        # albums = session.query(XiurenAlbum).filter(XiurenAlbum.is_enabled == 1).order_by(func.random()).offset(page.offset).limit(page.limit).all()
+        # for album in albums:
+        #     album.category = next(x for x in categories if x.id == album.category_id)
+
+        datas = []
+        for c in configs.categories_on_home:
+            category = next(x for x in categories if x.id == c["id"])
+            albums = session.query(XiurenAlbum).filter(XiurenAlbum.category_id == c["id"], XiurenAlbum.is_enabled == 1).order_by(desc(XiurenAlbum.view_count)).limit(10).all()
+            datas.append({"category": category, "albums": albums})
+
         tops = session.query(XiurenAlbum).filter(XiurenAlbum.is_enabled == 1).order_by(desc(XiurenAlbum.view_count)).limit(10).all()
         for album in tops:
             album.category = next(x for x in categories if x.id == album.category_id)
     data = {
         "menu": MENU,
-        "page": page,
+        # "page": page,
         "categories": get_category(),
         "tops": tops,
-        "albums": albums,
+        # "albums": albums,
+        "datas": datas,
         "url": request.url,
         "meta": configs.meta,
         "cover": tops[0].cover if len(tops) else f"{configs.meta.site_url}/static/images/cover.jpg",

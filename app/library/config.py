@@ -7,7 +7,8 @@ config.py
 
 #import config_default
 import os.path
-import json
+# import json
+import commentjson
 
 class Dict(dict):
     '''
@@ -54,10 +55,10 @@ path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
 configs = None
 user = None
 with open('{}/config.json'.format(path), encoding='utf-8') as f:
-    configs = json.load(f)
+    configs = commentjson.load(f)
 
 with open('{}/user.json'.format(path), encoding='utf-8') as f:
-    user = json.load(f)
+    user = commentjson.load(f)
 
 configs = merge(configs, user)
 
