@@ -252,7 +252,7 @@ async def category(category, request: Request, page = "1", order = "new"):
         "keywords": f"{configs.meta.keywords}, {category.title}" if category else configs.meta.keywords,
         "description": f"{configs.meta.description}, {category.title}" if category else configs.meta.description
     }
-    return templates.TemplateResponse("index.html", {"request": request, "data": data})
+    return templates.TemplateResponse("category.html", {"request": request, "data": data})
 
 
 @app.get("/{category}/{id}", response_class=HTMLResponse)
