@@ -106,8 +106,10 @@
 </nav>
 
 {% for ds in data.datas %}
-<div class="row g-4 my-3">
-    <h3>{{ ds.category.title}}</h3>
+<div class="row g-4 mt-3">
+    <h3>
+        <a class="link-dark" href="/{{ds.category.name}}" alt="{{ ds.category.title }}" title="{{ ds.category.title }}">{{ ds.category.title }}</a>
+    </h3>
 </div>
 <div class="row row-cols-2 row-cols-md-5">
 
