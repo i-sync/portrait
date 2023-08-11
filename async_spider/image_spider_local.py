@@ -44,14 +44,14 @@ def insert_slash_between_year_month(input_string):
     return modified_string
 
 class ImageSpider(Spider):
-    concurrency = 20
+    concurrency = 30
     start_urls = ['https://www.github.com']
 
     async def process_start_urls(self):
 
         with session_scope() as session:
             # xiuren image
-            images = session.query(XiurenImage).filter().limit(10).all()
+            images = session.query(XiurenImage).filter().offset(300).limit(100).all()
             #print(f"start id: {images[0].id}, end id: {images[-1].id}, total count: {len(images)}")
             for image in images:
                 image_path = re.split('/', image.image_url.replace("https://", "").replace("http://", ""), maxsplit=1)[-1]
@@ -60,7 +60,8 @@ class ImageSpider(Spider):
                 if os.path.exists(local_path):
                     print(local_path, "exists, skip...")
                     continue
-                image_url = image.image_url.replace("www.xiurenb.vip","x0811a.20dh.top").replace("www.xiurenb.net","x0811a.20dh.top").replace("www.xiurenb.com","x0811a.20dh.top")
+                #image_url = image.image_url.replace("www.xiurenb.vip","x0811a.20dh.top").replace("www.xiurenb.net","x0811a.20dh.top").replace("www.xiurenb.com","x0811a.20dh.top")
+                image_url = f'{configs.meta.image_url}{image.backup_url}'
                 yield self.request(url=image_url, callback=self.parse, metadata={"image_id": image.id, "image_url": image_url, "new_image_path": new_image_path})
 
 
