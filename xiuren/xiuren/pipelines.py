@@ -168,7 +168,12 @@ class XiurenImagePipeline:
         ct = item["ct"]
         new_image_path = item["new_image_path"]
 
-        with open(f'{IMAGE_PATH}/{new_image_path}', 'wb') as f:
+        local_path = f'{IMAGE_PATH}/{new_image_path}'
+        # check folder exists , if not ,create.
+        local_dir = os.path.dirname(local_path)
+        os.makedirs(local_dir, exist_ok=True)
+
+        with open(local_path, 'wb') as f:
             f.write(item["content"])
 
         if ct == "album":
