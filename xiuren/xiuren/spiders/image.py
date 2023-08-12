@@ -48,7 +48,7 @@ class ImageSpider(scrapy.Spider):
             #for image in images:
             #    self.datas.append({"id": image.id, "image_url": image.image_url.replace("www.xiurenb.cc","p.xiurenb.cc")})
 
-            images = session.query(XiurenImage).filter().offset(0).limit(10).all()
+            images = session.query(XiurenImage).filter(XiurenImage.backup_url.op('regexp')('uploadfile/[0-9]{6}/')).limit(10000).all()
             for image in images:
                 image_path = re.split('/', image.image_url.replace("https://", "").replace("http://", ""), maxsplit=1)[-1]
                 #print(image_path)
@@ -57,8 +57,8 @@ class ImageSpider(scrapy.Spider):
                 if os.path.exists(local_path):
                     print(local_path, "exists, skip...")
                     continue
-                #image_url = image.image_url.replace("www.xiurenb.vip","x0811a.20dh.top").replace("www.xiurenb.net","x0811a.20dh.top").replace("www.xiurenb.com","x0811a.20dh.top")
-                image_url = f'{configs.meta.image_url}{image_path}'
+                image_url = image.image_url.replace("www.xiurenb.vip","x0811a.20dh.top").replace("www.xiurenb.net","x0811a.20dh.top").replace("www.xiurenb.com","x0811a.20dh.top")
+                #image_url = f'{configs.meta.image_url}{image_path}'
                 self.datas.append({"id": image.id, "image_url": image_url, "new_image_path": new_image_path})
                 # yield self.request(url=image_url, callback=self.parse, metadata={"image_id": image.id, "image_url": image_url, "new_image_path": new_image_path})
 

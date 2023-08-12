@@ -12,7 +12,7 @@ BOT_NAME = 'xiuren'
 SPIDER_MODULES = ['xiuren.spiders']
 NEWSPIDER_MODULE = 'xiuren.spiders'
 
-LOG_LEVEL = 'ERROR'
+LOG_LEVEL = 'INFO'
 IMAGES_STORE = '/root/data_image'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36'
@@ -21,7 +21,7 @@ USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 8
+CONCURRENT_REQUESTS = 32
 
 # https://www.cnblogs.com/liuys635/p/14343282.html
 # https://docs.scrapy.org/en/latest/topics/media-pipeline.html
