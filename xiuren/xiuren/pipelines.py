@@ -20,6 +20,8 @@ from scrapy.exceptions import DropItem
 import scrapy
 
 
+IMAGE_PATH = "/mnt/portrait"
+
 class XiurenAlbumExistsPipeline:
     """
     check album title if exists in db.
@@ -157,23 +159,17 @@ class XiurenImagePipeline:
         if not item:
             return
 
-        print(item["id"], item["ct"], item["b2_key"], item["ext"])
+        #print(item["id"], item["ct"], item["new_image_path"])
         #return item
 
-        # boto3
 
-        # b2 = get_b2_resource()
-        b2_client = get_b2_client()
-        bucket_name = configs.b2.bucket_name
 
         image_id = item["id"]
         ct = item["ct"]
-        #buf = io.BytesIO(item["content"])
-        ext = item["ext"]
-        b2_key = item["b2_key"]
-        # b2.Object(bucket_name, b2_key).put(Body=buf, ContentType=f"image/{ext}")
-        b2_client.put_object(Body=item["content"], Bucket=bucket_name, Key=b2_key, ContentType=f"image/{ext}")
-        print(f"image upload b2 finish, b2_key:{b2_key}")
+        new_image_path = item["new_image_path"]
+
+        with open(f'{IMAGE_PATH}/{new_image_path}', 'wb') as f:
+            f.write(item["content"])
 
         if ct == "album":
             with session_scope() as session:
@@ -187,11 +183,13 @@ class XiurenImagePipeline:
             with session_scope() as session:
                 image = session.query(XiurenImage).filter(XiurenImage.id == image_id).first()
                 if image:
-                    image.backup_url = b2_key
+                    image.backup_url = new_image_path
                 else:
                     print(f"image not found, image_id:{image_id}")
                 session.commit()
 
+
+            print(f"{image_id}, {new_image_path}, end time: {time.time()}")
 
         # b2sdk
         '''

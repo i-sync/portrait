@@ -33,3 +33,4 @@ class XiurenImageItem(scrapy.Item):
     id = scrapy.Field()
     ct = scrapy.Field()
     ext = scrapy.Field()
+    new_image_path = scrapy.Field()
