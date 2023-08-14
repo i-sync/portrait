@@ -257,7 +257,7 @@ async def category(category, request: Request, page = "1", order = "new"):
 
 
 @app.get("/{category}/{id}", response_class=HTMLResponse)
-@limiter.limit("20000/day;2000/hour;60/minute;1/second")
+@limiter.limit("20000/day;2000/hour;300/minute;10/second")
 async def article(category, id, request: Request, page = "1"):
     parse_user_agent(request)
     categories = get_category()
