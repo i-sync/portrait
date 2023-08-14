@@ -4,6 +4,7 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import sys
 sys.path.append("..")
+import re
 from app.library.tools import get_proxy
 from app.library.models import session_scope, XiurenAlbum
 from scrapy import signals
@@ -134,7 +135,8 @@ class XiurenAlbumMiddleware:
         if request_type and request_type == "album":
             print("search db")
             with session_scope() as session:
-                album = session.query(XiurenAlbum).filter(XiurenAlbum.origin_link == request.url).first()
+                req_path = re.split('/', request.url.replace("https://", "").replace("http://", ""), maxsplit=1)[-1]
+                album = session.query(XiurenAlbum).filter(XiurenAlbum.origin_link.endswith(req_path)).first()
                 if album:
                     print("crawled, skip...", request.url)
                     raise IgnoreRequest()
