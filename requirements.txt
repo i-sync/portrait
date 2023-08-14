@@ -25,3 +25,4 @@ b2sdk
 boto3
 pillow
 commentjson
+jinja2

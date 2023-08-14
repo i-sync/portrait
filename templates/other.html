@@ -76,7 +76,7 @@
         {% for album in data.tops %}
         <div class="carousel-item {% if loop.index0 == 0 %} active {% endif %} ">
             <a href="/{{album.category.name}}/{{album.id}}" target="_blank" alt="{{album.title}}" title="{{album.title}}">
-                <img src="/static/images/cartoon-snail-loading-loading-gif-animation_2734139.png" data-src="{{data.meta.image_url}}{{album.cover_backup}}" class="d-block lazy" alt="{{album.title}}" referrerpolicy="no-referrer" />
+                <img src="/static/images/cartoon-snail-loading-loading-gif-animation_2734139.png" data-src="{{data.meta.site_url}}/{{album.cover_backup}}" class="d-block lazy" alt="{{album.title}}" referrerpolicy="no-referrer" />
             </a>
             <div class="carousel-caption d-block d-md-block">
                 <h5>{{album.author}}</h5>
@@ -112,7 +112,7 @@
     <div class="col">
         <a class="card-link" href="/{{album.category.name}}/{{album.id}}" alt="{{album.title}}" title="{{album.title}}">
             <div class="card h-100">
-                <img class="card-img-top lazy" src="/static/images/cartoon-snail-loading-loading-gif-animation_2734139.png" data-src="{{data.meta.image_url}}{{album.cover_backup}}" alt="{{album.title}}" referrerpolicy="no-referrer" />
+                <img class="card-img-top lazy" src="/static/images/cartoon-snail-loading-loading-gif-animation_2734139.png" data-src="{{data.meta.site_url}}/{{album.cover_backup}}" alt="{{album.title}}" referrerpolicy="no-referrer" />
                 <span class=" author position-absolute badge rounded-pill bg-secondary">
                     <object>
                         <a class="card-link" href="/search/?s={{album.author}}" alt="{{album.author}}" title="{{album.author}}">
