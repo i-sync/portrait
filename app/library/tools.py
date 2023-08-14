@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 import time
 import json
 import random
@@ -34,6 +35,16 @@ def date_filter(t):
 
 def datetime_filter(t):
     return time.strftime("%Y-%m-%d %X", time.localtime(t))
+
+
+def insert_slash_between_year_month(input_string):
+    # 定义匹配年月的正则表达式
+    pattern = r'/(\d{4})(\d{2})/'
+
+    # 使用正则表达式进行匹配和替换
+    modified_string = re.sub(pattern, r'/\1/\2/', input_string)
+
+    return modified_string
 
 
 def test_proxy(proxies):

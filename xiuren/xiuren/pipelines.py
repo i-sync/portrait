@@ -13,6 +13,7 @@ from app.library.models import session_scope, XiurenAlbum, XiurenImage, XiurenCa
 
 from app.library.b2s3 import get_b2_client, get_b2_resource, key_exists
 from app.library.b2 import get_b2_api, get_b2_bucket
+from app.library.tools import insert_slash_between_year_month
 
 from scrapy.pipelines.images import ImagesPipeline
 from scrapy.utils.misc import md5sum
@@ -113,7 +114,8 @@ class XiurenMediaPipeline(ImagesPipeline):
 
     headers = {}
     def file_path(self, request, response=None, info=None, *, item=None):
-        return re.split('/', request.url.replace("https://", "").replace("http://", ""), maxsplit=1)[-1]
+        image_path = re.split('/', request.url.replace("https://", "").replace("http://", ""), maxsplit=1)[-1]
+        return insert_slash_between_year_month(image_path)
 
     def get_media_requests(self, item, info):
 
@@ -131,7 +133,7 @@ class XiurenMediaPipeline(ImagesPipeline):
         if isinstance(item, DropItem):
             raise  item
         image_paths = [x for ok, x in results if ok]
-        #print(image_paths)
+        # print(image_paths)
         if not image_paths:
             raise DropItem("Item contains no images")
 
@@ -139,20 +141,19 @@ class XiurenMediaPipeline(ImagesPipeline):
         return item
 
     def file_downloaded(self, response, request, info, *, item=None):
-        path = self.file_path(request, response=response, info=info, item=item)
+        new_image_path = self.file_path(request, response=response, info=info, item=item)
+
+        local_path = f'{IMAGE_PATH}/{new_image_path}'
+        # check folder exists , if not ,create.
+        local_dir = os.path.dirname(local_path)
+        os.makedirs(local_dir, exist_ok=True)
+
+        with open(local_path, 'wb') as f:
+            f.write(response.body)
+
+        print(f"image download finish, new_image_path:{new_image_path}")
         buf = io.BytesIO(response.body)
-        checksum = md5sum(buf)
-        buf.seek(0)
-        #self.store.persist_file(path, buf, info)
-
-        ext =  request.url.split(".")[-1]
-
-        self.b2.Object(self.bucket_name, path).put(Body=buf, ContentType=f"image/{ext}")
-        # b2_client.put_object(Body=buf, Bucket=bucket_name, Key=b2_key, ContentType=f"image/{ext}")
-
-        print(f"image upload b2 finish, b2_key:{path}")
-
-        return checksum
+        return md5sum(buf)
 
 class XiurenImagePipeline:
     def process_item(self, item, spider):

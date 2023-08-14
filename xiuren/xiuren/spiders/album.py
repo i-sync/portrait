@@ -3,6 +3,7 @@ sys.path.append("..")
 import scrapy
 from bs4 import BeautifulSoup
 from app.library.models import session_scope, XiurenCategory
+from app.library.tools import insert_slash_between_year_month
 from xiuren.items import XiurenAlbumItem
 
 class AlbumSpider(scrapy.Spider):
@@ -70,7 +71,7 @@ class AlbumSpider(scrapy.Spider):
         item["description"] = ' '.join(description.split())
         item["origin_link"] = response.request.url
         item["cover"] = f"{self.base_p_url}{cover}"
-        item["cover_backup"] = cover.strip('/')
+        item["cover_backup"] = insert_slash_between_year_month(cover.strip('/'))
         item["image_urls"] = []
 
         images = response.xpath("//div[@class='content']/p/img")
