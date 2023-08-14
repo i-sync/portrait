@@ -180,10 +180,11 @@ class XiurenImagePipeline:
             with session_scope() as session:
                 album = session.query(XiurenAlbum).filter(XiurenAlbum.id == image_id).first()
                 if album:
-                    album.cover_backup = b2_key
+                    album.cover_backup = new_image_path
                 else:
-                    print(f"album not found, image_id:{image_id}")
+                    print(f"album not found, album_id:{image_id}")
                 session.commit()
+            print(f"{image_id}, {new_image_path}, end time: {time.time()}")
         elif ct == "image":
             with session_scope() as session:
                 image = session.query(XiurenImage).filter(XiurenImage.id == image_id).first()
