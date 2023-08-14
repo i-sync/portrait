@@ -42,7 +42,8 @@ templates = Jinja2Templates(directory="templates")
 templates.env.filters["datetime"] = datetime_filter
 templates.env.filters["date"] = date_filter
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+#https://github.com/encode/starlette/issues/1083#issuecomment-1416805553
+app.mount("/static", StaticFiles(directory="static", follow_symlink=True), name="static")
 
 
 
