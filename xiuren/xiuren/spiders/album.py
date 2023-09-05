@@ -59,7 +59,7 @@ class AlbumSpider(scrapy.Spider):
         item = response.meta["item"]
         title = response.xpath("/html/head/meta[@name='description']/@content").extract_first()
         keywords = response.xpath("/html/head/meta[@name='keywords']/@content").extract_first()
-        date = response.xpath("//div[@class='item_info']/div/span[2]/text()").extract_first()
+        date = response.xpath("//div[@class='item_info']/div/span/text()").extract_first()
         digest = response.xpath("//div[@class='item_title']/h1/text()").extract_first()
         description = response.xpath("//div[@class='jianjie']/text()").extract_first()
         cover = response.xpath("//div[@class='content']/p/img[1]/@src").extract_first()
