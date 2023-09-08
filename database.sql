@@ -42,6 +42,7 @@ create table xiuren_images (
     `updated_at` real not null,
     `is_enabled` bool not null default 1,
     -- unique key `idx_image_url` (`image_url`),
+    key `idx_album_id` (`album_id`),
     key `idx_created_at` (`created_at`),
     primary key (`id`)
 ) engine=innodb default charset=utf8mb4 COLLATE=utf8mb4_unicode_ci;
